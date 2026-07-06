@@ -9,11 +9,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
 @RequiredArgsConstructor
 @RestControllerAdvice
 public class ErrorExceptionControllerAdvice {
-
 
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<ErrorEntity> exceptionHandler(final BadRequestException e) {
@@ -105,4 +103,5 @@ public class ErrorExceptionControllerAdvice {
                         .errorMessage(e.getMessage())
                         .build());
     }
+
 }

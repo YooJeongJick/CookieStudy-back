@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum JwtErrorCode {
+
     INVALID_JWT_TOKEN(401, "Invalid JWT token"),
     JWT_TOKEN_EXPIRED(401, "JWT token has expired"),
     UNSUPPORTED_JWT_TOKEN(401, "JWT token is unsupported"),
@@ -15,4 +16,5 @@ public enum JwtErrorCode {
 
     private final int code;
     private final String message;
+
 }

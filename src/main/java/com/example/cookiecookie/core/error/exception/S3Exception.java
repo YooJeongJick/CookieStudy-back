@@ -1,6 +1,5 @@
 package com.example.cookiecookie.core.error.exception;
 
-
 import com.example.cookiecookie.core.error.ErrorCode;
 
 public class S3Exception extends BusinessException {

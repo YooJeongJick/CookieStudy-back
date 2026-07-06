@@ -17,4 +17,5 @@ public class ErrorEntity {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
+
 }
