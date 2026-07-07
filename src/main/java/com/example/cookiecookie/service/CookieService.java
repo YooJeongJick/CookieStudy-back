@@ -1,5 +1,7 @@
 package com.example.cookiecookie.service;
 
+import com.example.cookiecookie.core.error.ErrorCode;
+import com.example.cookiecookie.core.error.exception.NotFoundException;
 import com.example.cookiecookie.dto.CookieDto;
 import com.example.cookiecookie.entity.CookieEntity;
 import com.example.cookiecookie.repository.CookieRepository;
@@ -39,6 +41,9 @@ public class CookieService {
 
     public CookieDto findCookie(Long id) {
         CookieEntity cookie = cookieRepository.findById(id).orElse(null);
+        if (cookie == null)
+            throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
+
         return CookieDto.builder()
                 .cookieName(cookie.getCookieName())
                 .cookieLevel(cookie.getCookieLevel())
@@ -48,11 +53,17 @@ public class CookieService {
 
     public void updateCookie(Long id, CookieDto cookieDto) {
         CookieEntity cookie = cookieRepository.findById(id).orElse(null);
+        if (cookie == null)
+            throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
+
         cookie.update(cookieDto);
     }
 
     public void deleteCookie(Long id) {
         CookieEntity cookie = cookieRepository.findById(id).orElse(null);
+        if (cookie == null)
+            throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
+
         cookieRepository.delete(cookie);
     }
 
