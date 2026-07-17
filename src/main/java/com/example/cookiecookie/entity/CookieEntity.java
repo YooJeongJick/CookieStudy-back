@@ -1,5 +1,6 @@
 package com.example.cookiecookie.entity;
 
+import com.example.cookiecookie.core.entity.BaseEntity;
 import com.example.cookiecookie.dto.CookieDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,12 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CookieEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cookie_id")
-    private long id;
+public class CookieEntity extends BaseEntity {
 
     private String cookieName;
     private String cookieLevel;
