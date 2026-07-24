@@ -20,8 +20,8 @@ public class CookieEntity extends BaseEntity {
     private String cookieAttribute;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
-    private TeamEntity team;
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     public void update(CookieDto cookieDto) {
         this.cookieName = cookieDto.getCookieName();
