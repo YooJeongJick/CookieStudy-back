@@ -1,4 +1,4 @@
-package com.example.cookiecookie.core;
+package com.example.cookiecookie.core.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
