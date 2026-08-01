@@ -51,7 +51,7 @@ public class JwtTokenProvider {
     }
 
     public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
-        response.setHeader("refreshToken", "bearer "+ refreshToken);
+        response.setHeader("RefreshToken", "bearer "+ refreshToken);
     }
 
 }

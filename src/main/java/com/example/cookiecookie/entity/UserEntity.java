@@ -2,10 +2,18 @@ package com.example.cookiecookie.entity;
 
 import com.example.cookiecookie.core.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
