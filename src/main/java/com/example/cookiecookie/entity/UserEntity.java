@@ -25,8 +25,16 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
+    private String refreshToken;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<CookieEntity> cookies;
+
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 
 }

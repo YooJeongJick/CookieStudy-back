@@ -1,5 +1,6 @@
 package com.example.cookiecookie.controller;
 
+import com.example.cookiecookie.dto.LoginRequestDto;
 import com.example.cookiecookie.dto.RegisterRequestDto;
 import com.example.cookiecookie.service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,5 +27,13 @@ public class UserController {
         loginService.register(registerRequestDto, response);
         return ResponseEntity.ok("가입 성공, 헤더 내 토큰 확인");
     }
+
+    @Operation(summary = "로그인")
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        loginService.login(loginRequestDto, response);
+        return ResponseEntity.ok("로그인 성공, 헤더 내 토큰 확인");
+    }
+
 
 }

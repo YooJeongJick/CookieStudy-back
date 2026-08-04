@@ -2,7 +2,9 @@ package com.example.cookiecookie.service;
 
 import com.example.cookiecookie.core.error.ErrorCode;
 import com.example.cookiecookie.core.error.exception.DuplicateException;
+import com.example.cookiecookie.core.error.exception.NotFoundException;
 import com.example.cookiecookie.core.security.JwtTokenProvider;
+import com.example.cookiecookie.dto.LoginRequestDto;
 import com.example.cookiecookie.dto.RegisterRequestDto;
 import com.example.cookiecookie.entity.UserEntity;
 import com.example.cookiecookie.repository.UserRepository;
@@ -22,6 +24,23 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
+    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        UserEntity user = userRepository.findByLoginId(loginRequestDto.getLoginId())
+                .orElseThrow(() -> new NotFoundException("cannot find user", ErrorCode.NOT_FOUND_EXCEPTION));
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+            throw new NotFoundException("cannot find user", ErrorCode.NOT_FOUND_EXCEPTION);
+        }
+
+        String accessToken = jwtTokenProvider.createAccessToken(user.getLoginId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId());
+
+        user.updateRefreshToken(refreshToken);
+
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
+    }
+
+    @Transactional
     public void register(RegisterRequestDto registerRequestDto, HttpServletResponse response) {
         if (userRepository.existsByLoginId(registerRequestDto.getLoginId())) {
             throw new DuplicateException("Duplicated loginId", ErrorCode.DUPLICATE_EXCEPTION);
@@ -36,6 +55,7 @@ public class LoginService {
                 .loginId(registerRequestDto.getLoginId())
                 .password(registerRequestDto.getPassword() != null ? passwordEncoder.encode(registerRequestDto.getPassword()) : null)
                 .nickname(registerRequestDto.getNickname())
+                .refreshToken(refreshToken)
                 .build();
 
         userRepository.save(user);
