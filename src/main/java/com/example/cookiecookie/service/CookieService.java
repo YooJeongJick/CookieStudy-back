@@ -4,7 +4,10 @@ import com.example.cookiecookie.core.error.ErrorCode;
 import com.example.cookiecookie.core.error.exception.NotFoundException;
 import com.example.cookiecookie.dto.CookieDto;
 import com.example.cookiecookie.entity.CookieEntity;
+import com.example.cookiecookie.entity.UserEntity;
 import com.example.cookiecookie.repository.CookieRepository;
+import com.example.cookiecookie.validation.UserValidation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +21,13 @@ import java.util.stream.Collectors;
 public class CookieService {
 
     private final CookieRepository cookieRepository;
+    private final UserValidation userValidation;
 
-    public void createCookie(CookieDto cookieDto) {
+    public void createCookie(CookieDto cookieDto, HttpServletRequest request) {
+        UserEntity user = userValidation.isPresentUser(request);
+
         CookieEntity cookie = CookieEntity.builder()
+                .user(user)
                 .cookieName(cookieDto.getCookieName())
                 .cookieLevel(cookieDto.getCookieLevel())
                 .cookieAttribute(cookieDto.getCookieAttribute())
@@ -41,8 +48,9 @@ public class CookieService {
 
     public CookieDto findCookie(Long id) {
         CookieEntity cookie = cookieRepository.findById(id).orElse(null);
-        if (cookie == null)
+        if (cookie == null) {
             throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
+        }
 
         return CookieDto.builder()
                 .cookieName(cookie.getCookieName())
@@ -53,16 +61,18 @@ public class CookieService {
 
     public void updateCookie(Long id, CookieDto cookieDto) {
         CookieEntity cookie = cookieRepository.findById(id).orElse(null);
-        if (cookie == null)
+        if (cookie == null) {
             throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
+        }
 
         cookie.update(cookieDto);
     }
 
     public void deleteCookie(Long id) {
         CookieEntity cookie = cookieRepository.findById(id).orElse(null);
-        if (cookie == null)
+        if (cookie == null) {
             throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
+        }
 
         cookieRepository.delete(cookie);
     }

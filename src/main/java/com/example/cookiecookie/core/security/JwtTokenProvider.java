@@ -1,9 +1,11 @@
 package com.example.cookiecookie.core.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,15 @@ public class JwtTokenProvider {
 
     @Value("${jwt.refreshTokenExpiration}")
     private long refreshTokenValidTime;
+
+
+    public String getLoginId(String token) {
+        JwtParser jwtParser = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build();
+
+        return jwtParser.parseClaimsJws(token).getBody().getSubject();
+    }
 
     public String createAccessToken(String loginId) {
         return this.createToken(loginId, accessTokenValidTime);
@@ -52,6 +63,14 @@ public class JwtTokenProvider {
 
     public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
         response.setHeader("RefreshToken", "bearer "+ refreshToken);
+    }
+
+    public String resolveAccessToken(HttpServletRequest request) {
+        if (request.getHeader("Authorization") != null ) {
+            return request.getHeader("Authorization").substring(7);
+        }
+
+        return null;
     }
 
 }

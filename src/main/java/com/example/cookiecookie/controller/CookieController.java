@@ -4,6 +4,7 @@ import com.example.cookiecookie.dto.CookieDto;
 import com.example.cookiecookie.service.CookieService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,8 @@ public class CookieController {
 
     @Operation(summary = "쿠키 생성")
     @PostMapping()
-    public ResponseEntity<String> createCookie(@RequestBody CookieDto cookieDto) {
-        cookieService.createCookie(cookieDto);
+    public ResponseEntity<String> createCookie(@RequestBody CookieDto cookieDto, HttpServletRequest request) {
+        cookieService.createCookie(cookieDto, request);
         return ResponseEntity.ok("쿠키 생성 완료");
     }
 
