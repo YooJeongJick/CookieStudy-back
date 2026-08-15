@@ -36,22 +36,22 @@ public class CookieController {
 
     @Operation(summary = "개별 쿠키 조회")
     @GetMapping("/{id}")
-    public ResponseEntity<CookieDto> findCookie(@PathVariable Long id) {
-        CookieDto cookie = cookieService.findCookie(id);
+    public ResponseEntity<CookieDto> findCookie(@PathVariable Long id, HttpServletRequest request) {
+        CookieDto cookie = cookieService.findCookie(id, request);
         return ResponseEntity.ok(cookie);
     }
 
     @Operation(summary = "쿠키 수정")
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCookie(@PathVariable Long id, @RequestBody CookieDto cookieDto) {
-        cookieService.updateCookie(id, cookieDto);
+    public ResponseEntity<String> updateCookie(@PathVariable Long id, @RequestBody CookieDto cookieDto, HttpServletRequest request) {
+        cookieService.updateCookie(id, cookieDto, request);
         return ResponseEntity.ok("쿠키 수정 완료");
     }
 
     @Operation(summary = "쿠키 삭제")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCookie(@PathVariable Long id) {
-        cookieService.deleteCookie(id);
+    public ResponseEntity<String> deleteCookie(@PathVariable Long id, HttpServletRequest request) {
+        cookieService.deleteCookie(id, request);
         return ResponseEntity.ok("쿠키 삭제 완료");
     }
 

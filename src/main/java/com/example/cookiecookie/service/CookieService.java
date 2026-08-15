@@ -1,11 +1,10 @@
 package com.example.cookiecookie.service;
 
-import com.example.cookiecookie.core.error.ErrorCode;
-import com.example.cookiecookie.core.error.exception.NotFoundException;
 import com.example.cookiecookie.dto.CookieDto;
 import com.example.cookiecookie.entity.CookieEntity;
 import com.example.cookiecookie.entity.UserEntity;
 import com.example.cookiecookie.repository.CookieRepository;
+import com.example.cookiecookie.validation.CookieValidation;
 import com.example.cookiecookie.validation.UserValidation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,9 @@ import java.util.stream.Collectors;
 public class CookieService {
 
     private final CookieRepository cookieRepository;
+
     private final UserValidation userValidation;
+    private final CookieValidation cookieValidation;
 
     public void createCookie(CookieDto cookieDto, HttpServletRequest request) {
         UserEntity user = userValidation.isPresentUser(request);
@@ -46,11 +47,10 @@ public class CookieService {
                 .collect(Collectors.toList());
     }
 
-    public CookieDto findCookie(Long id) {
-        CookieEntity cookie = cookieRepository.findById(id).orElse(null);
-        if (cookie == null) {
-            throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
-        }
+    public CookieDto findCookie(Long id, HttpServletRequest request) {
+        UserEntity user = userValidation.isPresentUser(request);
+        CookieEntity cookie = cookieValidation.isPresentCookie(id);
+        cookieValidation.isValidateCookie(user, cookie);
 
         return CookieDto.builder()
                 .cookieName(cookie.getCookieName())
@@ -59,20 +59,18 @@ public class CookieService {
                 .build();
     }
 
-    public void updateCookie(Long id, CookieDto cookieDto) {
-        CookieEntity cookie = cookieRepository.findById(id).orElse(null);
-        if (cookie == null) {
-            throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
-        }
+    public void updateCookie(Long id, CookieDto cookieDto, HttpServletRequest request) {
+        UserEntity user = userValidation.isPresentUser(request);
+        CookieEntity cookie = cookieValidation.isPresentCookie(id);
+        cookieValidation.isValidateCookie(user, cookie);
 
         cookie.update(cookieDto);
     }
 
-    public void deleteCookie(Long id) {
-        CookieEntity cookie = cookieRepository.findById(id).orElse(null);
-        if (cookie == null) {
-            throw new NotFoundException("존재하지 않는 쿠키", ErrorCode.NOT_FOUND_EXCEPTION);
-        }
+    public void deleteCookie(Long id, HttpServletRequest request) {
+        UserEntity user = userValidation.isPresentUser(request);
+        CookieEntity cookie = cookieValidation.isPresentCookie(id);
+        cookieValidation.isValidateCookie(user, cookie);
 
         cookieRepository.delete(cookie);
     }

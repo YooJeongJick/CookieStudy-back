@@ -22,4 +22,5 @@ public class UserValidation {
 
         return user;
     }
+
 }
