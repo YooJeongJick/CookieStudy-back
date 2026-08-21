@@ -1,14 +1,15 @@
 package com.example.cookiecookie.core.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.example.cookiecookie.core.error.ErrorCode;
+import com.example.cookiecookie.core.error.exception.UnAuthorizedException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -17,6 +18,8 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
+
+    private final CustomUserDetailService customUserDetailService;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
@@ -27,6 +30,26 @@ public class JwtTokenProvider {
     @Value("${jwt.refreshTokenExpiration}")
     private long refreshTokenValidTime;
 
+
+    public boolean validateToken(String token) {
+        try {
+            Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+
+            return !claims.getBody().getExpiration().before(new Date());
+
+        } catch (Exception e) {
+            throw new UnAuthorizedException("만료된 토큰입니다", ErrorCode.UNAUTHORIZED_EXCEPTION);
+        }
+    }
+
+    public UsernamePasswordAuthenticationToken getAuthentication(String token) {
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(this.getLoginId(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
 
     public String getLoginId(String token) {
         JwtParser jwtParser = Jwts.parserBuilder()
@@ -68,6 +91,14 @@ public class JwtTokenProvider {
     public String resolveAccessToken(HttpServletRequest request) {
         if (request.getHeader("Authorization") != null ) {
             return request.getHeader("Authorization").substring(7);
+        }
+
+        return null;
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        if (request.getHeader("refreshToken") != null ) {
+            return request.getHeader("refreshToken").substring(7);
         }
 
         return null;
