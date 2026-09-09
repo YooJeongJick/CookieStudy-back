@@ -25,7 +25,7 @@ public class CookieService {
     private final CookieValidation cookieValidation;
 
     public void createCookie(CookieDto cookieDto, HttpServletRequest request) {
-        UserEntity user = userValidation.isPresentUser(request);
+        UserEntity user = userValidation.checkUser(request);
 
         CookieEntity cookie = CookieEntity.builder()
                 .user(user)
@@ -48,9 +48,9 @@ public class CookieService {
     }
 
     public CookieDto findCookie(Long id, HttpServletRequest request) {
-        UserEntity user = userValidation.isPresentUser(request);
-        CookieEntity cookie = cookieValidation.isPresentCookie(id);
-        cookieValidation.isValidateCookie(user, cookie);
+        UserEntity user = userValidation.checkUser(request);
+        CookieEntity cookie = cookieValidation.checkCookie(id);
+        cookieValidation.checkCookieOwner(user, cookie);
 
         return CookieDto.builder()
                 .cookieName(cookie.getCookieName())
@@ -60,17 +60,17 @@ public class CookieService {
     }
 
     public void updateCookie(Long id, CookieDto cookieDto, HttpServletRequest request) {
-        UserEntity user = userValidation.isPresentUser(request);
-        CookieEntity cookie = cookieValidation.isPresentCookie(id);
-        cookieValidation.isValidateCookie(user, cookie);
+        UserEntity user = userValidation.checkUser(request);
+        CookieEntity cookie = cookieValidation.checkCookie(id);
+        cookieValidation.checkCookieOwner(user, cookie);
 
         cookie.update(cookieDto);
     }
 
     public void deleteCookie(Long id, HttpServletRequest request) {
-        UserEntity user = userValidation.isPresentUser(request);
-        CookieEntity cookie = cookieValidation.isPresentCookie(id);
-        cookieValidation.isValidateCookie(user, cookie);
+        UserEntity user = userValidation.checkUser(request);
+        CookieEntity cookie = cookieValidation.checkCookie(id);
+        cookieValidation.checkCookieOwner(user, cookie);
 
         cookieRepository.delete(cookie);
     }

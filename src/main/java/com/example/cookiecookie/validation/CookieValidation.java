@@ -15,16 +15,12 @@ public class CookieValidation {
 
     private final CookieRepository cookieRepository;
 
-    public CookieEntity isPresentCookie(Long id) {
-        CookieEntity cookie = cookieRepository.findById(id).orElse(null);
-        if (cookie == null) {
-            throw new NotFoundException("찾을 수 없는 쿠키입니다", ErrorCode.NOT_FOUND_EXCEPTION);
-        }
-
-        return cookie;
+    public CookieEntity checkCookie(Long id) {
+        return cookieRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("찾을 수 없는 쿠키입니다", ErrorCode.NOT_FOUND_EXCEPTION));
     }
 
-    public void isValidateCookie(UserEntity user, CookieEntity cookie) {
+    public void checkCookieOwner(UserEntity user, CookieEntity cookie) {
         if (cookie.getUser() != user) {
             throw new UnAuthorizedException("접근할 수 없는 쿠키입니다", ErrorCode.UNAUTHORIZED_EXCEPTION);
         }
