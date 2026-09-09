@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class LoginService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final UserValidation userValidation;

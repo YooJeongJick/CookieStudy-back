@@ -2,7 +2,7 @@ package com.example.cookiecookie.controller;
 
 import com.example.cookiecookie.dto.LoginRequestDto;
 import com.example.cookiecookie.dto.RegisterRequestDto;
-import com.example.cookiecookie.service.LoginService;
+import com.example.cookiecookie.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,19 +19,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "User Controller", description = "유저 API")
 public class UserController {
 
-    private final LoginService loginService;
+    private final UserService userService;
 
     @Operation(summary = "회원 가입")
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDto registerRequestDto, HttpServletResponse response) {
-        loginService.register(registerRequestDto, response);
+        userService.register(registerRequestDto, response);
         return ResponseEntity.ok("가입 성공, 헤더 내 토큰 확인");
     }
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        loginService.login(loginRequestDto, response);
+        userService.login(loginRequestDto, response);
         return ResponseEntity.ok("로그인 성공, 헤더 내 토큰 확인");
     }
 
