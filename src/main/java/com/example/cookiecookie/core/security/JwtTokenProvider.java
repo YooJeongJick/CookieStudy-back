@@ -52,8 +52,9 @@ public class JwtTokenProvider {
     }
 
     public String getLoginId(String token) {
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
         JwtParser jwtParser = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .setSigningKey(key)
                 .build();
 
         return jwtParser.parseClaimsJws(token).getBody().getSubject();
@@ -81,7 +82,7 @@ public class JwtTokenProvider {
     }
 
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
-        response.setHeader("Authorization", "bearer "+ accessToken);
+        response.setHeader("AccessToken", "bearer "+ accessToken);
     }
 
     public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
@@ -89,16 +90,16 @@ public class JwtTokenProvider {
     }
 
     public String resolveAccessToken(HttpServletRequest request) {
-        if (request.getHeader("Authorization") != null ) {
-            return request.getHeader("Authorization").substring(7);
+        if (request.getHeader("AccessToken") != null ) {
+            return request.getHeader("AccessToken").substring(7);
         }
 
         return null;
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {
-        if (request.getHeader("refreshToken") != null ) {
-            return request.getHeader("refreshToken").substring(7);
+        if (request.getHeader("RefreshToken") != null ) {
+            return request.getHeader("RefreshToken").substring(7);
         }
 
         return null;
