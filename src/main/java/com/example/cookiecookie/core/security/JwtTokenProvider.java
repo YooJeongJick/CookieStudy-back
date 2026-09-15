@@ -32,18 +32,13 @@ public class JwtTokenProvider {
 
 
     public boolean validateToken(String token) {
-        try {
-            Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
-            Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        Jws<Claims> claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
 
-            return !claims.getBody().getExpiration().before(new Date());
-
-        } catch (Exception e) {
-            throw new UnAuthorizedException("만료된 토큰입니다", ErrorCode.UNAUTHORIZED_EXCEPTION);
-        }
+        return !claims.getBody().getExpiration().before(new Date());
     }
 
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
